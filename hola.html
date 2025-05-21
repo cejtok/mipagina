@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Adivina Juego de Cartas Binarias</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .tabla-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .tabla {
+            border: 1px solid #ccc;
+            padding: 10px;
+            width: 120px;
+        }
+        .resultado {
+            margin-top: 20px;
+            font-size: 1.2em;
+            color: green;
+        }
+    </style>
+</head>
+<body>
+    <h2>🎴 ADIVINADOR</h2>
+    <p>Piensa en un número del 1 al 31. Marca todas las tablas donde aparezca tu número:</p>
+    <div class="tabla-container" id="tablas"></div>
+    <button onclick="adivinarNumero()">Adivinar Número</button>
+    <div class="resultado" id="resultado"></div>
+
+    <script>
+        // Crear las 5 tablas binarias
+        const tablas = [];
+        for (let i = 0; i < 5; i++) {
+            let tabla = [];
+            for (let num = 1; num <= 31; num++) {
+                if ((num >> i) & 1) {
+                    tabla.push(num);
+                }
+            }
+            tablas.push(tabla);
+        }
+
+        // Mostrar tablas con checkboxes
+        const contenedor = document.getElementById("tablas");
+        tablas.forEach((tabla, index) => {
+            const div = document.createElement("div");
+            div.className = "tabla";
+            const checkbox = document.createElement("input");
+            checkbox.type = "checkbox";
+            checkbox.id = `tabla-${index}`;
+            div.appendChild(checkbox);
+            const label = document.createElement("label");
+            label.htmlFor = `tabla-${index}`;
+            label.innerHTML = `<strong>Tabla ${index + 1}</strong><br>${tabla.join(", ")}`;
+            div.appendChild(label);
+            contenedor.appendChild(div);
+        });
+
+        // Calcular el número a partir de las tablas seleccionadas
+        function adivinarNumero() {
+            let numero = 0;
+            for (let i = 0; i < 5; i++) {
+                const check = document.getElementById(`tabla-${i}`);
+                if (check.checked) {
+                    numero += Math.pow(2, i);
+                }
+            }
+            const resultado = document.getElementById("resultado");
+            if (numero > 0) {
+                resultado.textContent = `🎉 Tu número es: ${numero}`;
+            } else {
+                resultado.textContent = "❗ Selecciona al menos una tabla.";
+            }
+        }
+    </script>
+</body>
+</html>
